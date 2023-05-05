@@ -1,9 +1,6 @@
 # Flutter Guideline
 
-Hi! this document contains recommendations indicating different policies, procedures or standard on how development
-should be conducted.
-
-General coding guideline can be found, in the project here **analysis_options.yaml** file.
+Hello! This document contains recommendations for policies, procedures, and standards regarding how development should be conducted.
 
 ## Project code structure
 
@@ -41,7 +38,7 @@ Here are the folder types that would be part of a feature folder.
 ```
 |-- ui/
 |-- cubits/
-|-- business_objects/
+|-- domain_objects/
 |-- exceptions/
 |-- use_cases
 |-- services/
@@ -77,7 +74,7 @@ Guideline:
 
 - Screens filename and classes should be suffixed with **Screen**.
 - Screens classes should only interact with cubit classes.
-- Screen build method should be divided by private widgets that separate its **update regions**/**use case**. For example:
+- Screen build method should be divided by private widgets that separate its **update area**/**use case**. For example:
 
 ```dart
 class LoginScreen extends StatelessWidget {
@@ -98,13 +95,13 @@ class LoginScreen extends StatelessWidget {
 // extracted by use case.
 class _LoginLogo extends StatelessWidget {}
 
-// extracted by update regions.
+// extracted by update area.
 class _LoginForm extends StatefullWidget {}
 
-// extracted by update regions.
+// extracted by update area.
 class _LoginActions extends StatelesssWidget {}
 
-// extracted by update regions.
+// extracted by update area.
 class _LoginFooter extends StatelessWidget {}
 ```
 
@@ -112,7 +109,7 @@ class _LoginFooter extends StatelessWidget {}
   you should move the private widgets to a part file. Part file naming convention for screen: 
   ${name of the screen file}_components.dart. For example:
 
-login_screen.dart
+`login_screen.dart`
 
 ```dart
 part 'login_screen_components.dart';
@@ -136,7 +133,7 @@ class LoginScreen extends StatelessWidget {
 class _LoginLogo extends StatelessWidget {}
 ```
 
-login_screen_components.dart
+`login_screen_components.dart`
 
 ```dart
 part of 'login_screen.dart';
@@ -226,10 +223,7 @@ Guideline:
 
 - View filename and classes should be suffixed with **View**.
 - View classes should only interact with cubit classes.
-- Screen build method should be divided by private widgets that separate its **update regions**/**use case**. For example:
-
-
-### UI Components
+- Screen build method should be divided by private widgets that separate its **update area**/**use case**. For example:
 
 ## Cubits
 
@@ -253,14 +247,13 @@ Future<bool> login(String username, String password);
 - Suffix your class with Cubit, example LoginCubit.
 - Cubit class files should be under the cubits folder of the feature.
 
-## Cubit's State.
+### Cubit's State.
 
 A cubit state class represent the state of ui bounded to it a given time.
 
 Guideline Recommendations:
 
-- Use a single class for state or define a base class and define subclass for each state, you can use the dart
-  meta [sealed](https://api.flutter.dev/flutter/meta/sealed-constant.html) annotation to have you with that.
+- Use a single class for state or define a base class and define subclass for each state.
 - Final actions result should not be part of the state. for example:
 
 ```dart
@@ -427,7 +420,7 @@ class PremiumBookingRepository implements BookingRepository {}
 - Do not use tools, platform related libraries nor perform network logic in repositories, encapsulate that in data
   sources.
 - Only use data sources inside repositories.
-- Only receive as input primitive or business object and output business objects.
+- Only receive as input primitive or domain object and output domain objects.
 - Implementations of the **Repository API** should be named with the **repository class** name as suffix.
 - Avoid naming repositories with **Impl**  suffix, name them using **Default** prefix + **Base repositories name**.
 - Return Asynchronous type for public API (Future or Stream).
@@ -460,7 +453,7 @@ Guideline Recommendations.
 - Use data sources to access to data required to implement a functionality business logic.
 - Do not use tools, platform related libraries nor perform network logic in services, implement it in data sources.
 - Only use data sources inside services.
-- Only receive as input primitive or business object and output business objects.
+- Only receive as input primitive or domain object and output domain objects.
 - Implementations of the **Service API** should be named with the **service class** name as suffix.
 - Avoid naming services with **Impl**  suffix, name them using **Default** prefix + **Base service name**.
 - Return Asynchronous type for public API (Future or Stream).
@@ -503,7 +496,7 @@ class MemoryBookingDataSource implements LocalBookingDataSource {
 ```
 
 - Handle library or tool errors in data source and convert them to app custom exception.
-- Only receive as input primitive or business object and output business objects or primitive.
+- Only receive as input primitive or domain object and output domain objects or primitive.
 - Implementations of the **Data Source API** should be named with the **Data Source class** name as suffix.
 - Return Asynchronous type for public API (Future or Stream).
 - Implementation of the data sources should not change their public API (return type, method arguments).
@@ -541,11 +534,11 @@ Guidelines:
 class ApiRequest {
   //...fields...
 
-  factory ApiRequest.fromBO(BOObject bo) {
+  factory ApiRequest.fromDO(DOObject do) {
     //...mapper code...
   }
 
-  BOObject toBO() {
+  DOObject toDO() {
     //...mapper code...
   }
 }
@@ -554,65 +547,34 @@ class ApiRequest {
 - Do not implement saving or fetching logic in DTO, implement it in data sources.
 - DTO class files should be under the dtos folder of the feature.
 
-## Business Object
+## Domain Object
 
-Business Object are data classes representation of a part of the business or an item within it, they are used to execute
+Domain Object are data classes representation of a part of the business or an item within it, they are used to execute
 business logic independently of platform, library or tools.
 
-A business object may represent, for example, **a person, place, event, business process, or concept** and  **invoice, a
+A domain object may represent, for example, **a person, place, event, business process, or concept** and  **invoice, a
 product, a transaction or even details of a person**.
 
 Guideline:
 
-- Business Object classes name should be suffixed with BO.
-- Business Object classes should only contains data fields or method to format data fields.
-- Business Object classes should implement equals and hash-code methods, fromJson and toJson.
-- Business Object classes fields type should only be primitive or other business object.
-- Business Object class files should be under the business_objects folder of the feature.
-
-## Localization
-
-For localization, we use bd_l10n tool:
-
-```yaml
-project-type: flutter
-features:
-  - name: 'Common Localization' # name of the feature is also used as name of the generated file and class.
-    translation-dir: translation/common # where your localized messages are stored.
-    translation-template: common_en.arb # which file to use as template.
-    output-dir: lib/localizations/ # directory were the generated code will be generated.
-```
-
-When creating a new feature, for example Authentication, you would add the following settings:
-
-```yaml
-project-type: flutter
-
-features: # list of features used in the project, a project must have at least one feature.  
-  - name: 'Common Localization' # name of the feature is also used as name of the generated file and classes.  
-    translation-dir: translation/common # where your localized messages are stored.  
-    translation-template: en.arb # which file to use as template, this file should be in the translation-dir  
-    output-dir: lib/localizations/ # Were the generated localization classes written.  
-
-  - name: 'Authentication Localization' # name of the feature is also used as name of the generated file and classes.  
-    translation-dir: translation/authentication # where your localized messages are stored.  
-    translation-template: en.arb # which file to use as template, this file should be in the translation-dir  
-    output-dir: lib/localizations/ # Were the generated localization classes written.
-```
+- Domain Object classes name should be suffixed with DO.
+- Domain Object classes should only contains data fields or method to format data fields.
+- Domain Object classes should implement equals and hash-code methods, fromJson and toJson.
+- Domain Object classes fields type should only be primitive or other domain object.
+- Domain Object class files should be under the domain_objects folder of the feature.
 
 ## How to structure assets
 
 The same as for Project code structure.
 
-First the feature name than the assets type and the files.
+First the feature name, then the `assets` folder containing files.
 
 Example:
 
 ```
 |-- authentication/
-|---- svg/
+|---- assets/
 |------ password_hidden_icon.svg
 |------ forget_password_icon.svg
-|---- png/
 |------ background.png
 ```
