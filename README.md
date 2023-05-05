@@ -534,7 +534,7 @@ Guidelines:
 class ApiRequest {
   //...fields...
 
-  factory ApiRequest.fromDO(DOObject do) {
+  factory ApiRequest.fromDO(DOObject doObject) {
     //...mapper code...
   }
 
