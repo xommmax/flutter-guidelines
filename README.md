@@ -1,4 +1,4 @@
-# Flutter Guideline
+# Flutter Guidelines
 
 Hello! This document contains recommendations for policies, procedures, and standards regarding how development should be conducted.
 
