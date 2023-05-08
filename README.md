@@ -1,6 +1,6 @@
 # Flutter Guidelines
 
-Hello! This document contains recommendations for policies, procedures, and standards regarding how development should be conducted.
+Hello! This document contains my personal recommendations for policies, procedures, and standards regarding how development should be conducted.
 
 ## Project code structure
 
